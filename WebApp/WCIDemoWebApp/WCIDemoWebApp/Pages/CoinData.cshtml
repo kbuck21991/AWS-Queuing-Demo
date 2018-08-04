@@ -1,0 +1,16 @@
+﻿@page
+@model WCIDemoWebApp.Pages.CoinDataModel
+@{
+    ViewData["Title"] = "CoinData";
+}
+
+<h2>CoinData</h2>
+
+<table>
+    <th>Symbol</th><th>Name</th><th>Price</th><th>Volume</th><th>Data Pull Time (UTC)</th>
+    @foreach(var coin in Model.CoinData)
+    {
+            <tr><td>@coin.Label</td><td>@coin.Name</td><td>@coin.Price</td><td>@coin.Volume</td><td>@coin.Timestamp</td></tr>
+    }
+</table>
+
