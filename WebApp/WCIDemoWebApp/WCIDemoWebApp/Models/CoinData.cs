@@ -11,6 +11,14 @@ namespace WCIDemoWebApp.Models
 
         public int Id { get; set; }
 
-        public string Text { get; set; }
+        public string Label { get; set; }
+
+        public string Name { get; set; }
+
+        public Decimal Price { get; set; }
+
+        public Decimal Volume { get; set; }
+
+        public DateTime Timestamp { get; set; }
     }
 }

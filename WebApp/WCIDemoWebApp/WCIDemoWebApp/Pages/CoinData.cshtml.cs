@@ -10,11 +10,11 @@ namespace WCIDemoWebApp.Pages
 {
     public class CoinDataModel : PageModel
     {
-        public string CoinData { get; set; }
+        public List<CoinData> CoinData { get; set; }
         public void OnGet()
         {
             DBContext context = HttpContext.RequestServices.GetService(typeof(DBContext)) as DBContext;
-            CoinData = context.GetCoinData()[0].Text;
+            CoinData = context.GetCoinData();
 
         }
     }

@@ -33,8 +33,12 @@ namespace WCIDemoWebApp.Models
                         list.Add(new CoinData()
                         {
                             Id = Convert.ToInt32(reader["Id"]),
-                            Text = reader["Text"].ToString()
-                        });
+                            Label = reader["Label"].ToString(),
+                            Name = reader["Name"].ToString(),
+                            Price = Convert.ToDecimal(reader["Price"]),
+                            Volume = Convert.ToDecimal(reader["Volume"].ToString()),
+                            Timestamp = DateTime.UnixEpoch.AddSeconds(Convert.ToDouble(reader["Timestamp"].ToString()))
+                    });
                     }
                 }
             }

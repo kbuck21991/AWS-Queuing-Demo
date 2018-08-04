@@ -35,3 +35,15 @@ body {
         display: none;
     }
 }
+
+th {
+    font-weight: bold;
+}
+td, th {
+    border: 1px solid gray;
+    min-width: 200px;
+}
+
+table {
+    border-collapse: collapse;
+}
