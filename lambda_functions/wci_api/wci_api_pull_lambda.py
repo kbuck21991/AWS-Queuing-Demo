@@ -1,6 +1,9 @@
 import boto3
 import requests
 import urllib
+import logging
+logger = logging.getLogger()
+logger.setLevel(logging.INFO)
 
 #API Constants for Keys, Domains, Endpoints
 API_KEY = 'Eaw3he5JJQ9b5levIta4Hv1uX6QeKO'
@@ -36,7 +39,12 @@ def initAmazonHandlers():
 def enqueue_handler(event, context):
     sqsClient, sqsResource = initAmazonHandlers()
 
-    data = getTickerData()
+    try:
+        data = getTickerData()
+        logger.info("Data Successfully grabbed from WCI API.")
+    except Exception as e:
+        logger.info("Error Grabbing Data from WCI API. Error Details => " + repr(e))
+
 
     # Get the queue.
     queue = sqsResource.get_queue_by_name(QueueName='WCI_CoinDataDigestQueue')
@@ -49,9 +57,4 @@ def enqueue_handler(event, context):
             data
         )
     )
-
-    return {
-        'queue':queue.url,
-        'messageID': response['MessageId'],
-        'data': data
-    }
+    logger.info("Data Successfully enqueued. Data => " + str(data))

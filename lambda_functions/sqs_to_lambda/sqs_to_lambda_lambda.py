@@ -1,5 +1,8 @@
 import boto3
 import json
+import logging
+logger = logging.getLogger()
+logger.setLevel(logging.INFO)
 
 # Get the service client and resource handlers
 def initAmazonHandlers():
@@ -9,25 +12,16 @@ def initAmazonHandlers():
 def sqs_to_lambda_handler(event, context):
     sqsClient, sqsResource, lambda_client = initAmazonHandlers()
 
+    logger.info("Event Details => " + str(event))
+
     # Get the queue.
     queue = sqsResource.get_queue_by_name(QueueName='WCI_CoinDataDigestQueue')
+    logger.info("SQS URL => " + queue.url)
 
-    # Receive message from SQS queue
-    response = sqsClient.receive_message(
-        QueueUrl=queue.url,
-        AttributeNames=[
-            'SentTimestamp'
-        ],
-        MaxNumberOfMessages=1,
-        MessageAttributeNames=[
-            'All'
-        ],
-        VisibilityTimeout=0,
-        WaitTimeSeconds=0
-    )
-
-    message = response['Messages'][0]
-    handle = message['ReceiptHandle']
+    #Grab the data from the SQS Event that is auto-triggering the Lambda
+    message = event['Records'][0]
+    handle = message['receiptHandle']
+    logger.info("Message Details => " + str(message))
 
     # Delete received message from queue
     sqsClient.delete_message(
@@ -35,10 +29,7 @@ def sqs_to_lambda_handler(event, context):
         ReceiptHandle=handle
     )
 
+    #Invoke Passthrough Lambda due to VPC issues.
     lambda_client.invoke(FunctionName="lambda_to_rds",
                                                InvocationType='Event',
-                                               Payload=json.dumps(message['Body']))
-
-    return {
-        'msg':message['Body']
-    }
+                                               Payload=message['body'])
